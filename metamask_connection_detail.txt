@@ -1,0 +1,58 @@
+import { useState } from "react";
+import Web3 from 'web3';
+
+const Nav = () => {
+
+  const [WalletAddress, setwalletAddress] = useState("");
+  const [isConnected, setIsConnected] = useState(false);
+  const [balances, setBalance] = useState(0);
+
+  async function requestAccount() {
+    if (window.ethereum) {
+      setIsConnected(true);
+
+      try {
+        const accounts = await window.ethereum.request({
+          method: "eth_requestAccounts",
+        });
+
+        setwalletAddress(accounts[0]);
+
+        var web3 = new Web3(window.ethereum);
+        const balance=await web3.eth.getBalance(accounts[0])
+
+          // Convert Wei to Ether
+          const balanceEth = web3.utils.fromWei(balance, 'ether');
+          setBalance(balanceEth);
+          console.log("the balance is ",balanceEth);
+      
+      }
+        catch (Error) {
+          console.log("error while connecting metamask");
+        }
+      } else {
+        console.log("please install metamask");
+        setIsConnected(false);
+      }
+    }  
+{isConnected ? (
+      
+        
+       
+        <button  onClick={requestAccount}  className=" rounded-lg px-4 py-1 overflow-hidden relative group cursor-pointer border-2 font-semibold text-[15px] border-yellow-400 text-black hover:scale-105 duration-[700ms]">
+        <span className="absolute w-64 h-0 transition-all duration-[700ms] origin-center rotate-45 -translate-x-20 bg-yellow-400 top-1/2 group-hover:h-64 group-hover:-translate-y-32 ease"></span>
+            <span className="relative text-yellow-400 transition duration-[700ms] group-hover:text-white ease">
+            Metamask is connected :{balances}
+            </span>
+        </button>
+          ) : (
+            <button  onClick={requestAccount}  className=" rounded-lg px-4 py-1 overflow-hidden relative group cursor-pointer border-2 font-semibold text-[15px] border-yellow-400 text-black hover:scale-105 duration-[700ms]">
+            <span className="absolute w-64 h-0 transition-all duration-[700ms] origin-center rotate-45 -translate-x-20 bg-yellow-400 top-1/2 group-hover:h-64 group-hover:-translate-y-32 ease"></span>
+            <span className="relative text-yellow-400 transition duration-[700ms] group-hover:text-white ease">
+            INSIG TOKEN 
+            </span>
+          </button>
+        )}
+
+
+
